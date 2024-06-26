@@ -54,6 +54,31 @@ trait ExtendedCacheItemPoolTrait
     }
 
     /**
+     * @param string $pattern
+     * @return array
+     * @throws PhpfastcacheInvalidArgumentException
+     * @throws \Phpfastcache\Exceptions\PhpfastcacheUnsupportedMethodException
+     * @throws \RedisException
+     */
+    public function getAllKeys(string $pattern = ''): array
+    {
+        $driverReadAllKeysCallback = fn (string $pattern): iterable => $this->driverReadAllKeys($pattern);
+
+        /**
+         * This event allow you to customize the callback and wrap it to an invoker
+         * like SebastianBergmann\Invoke\Invoke, so you can set up custom timeouts.
+         */
+        $this->eventManager->dispatch(Event::CACHE_GET_ALL_ITEMS, $this, new EventReferenceParameter($driverReadAllKeysCallback));
+        $keys = $driverReadAllKeysCallback($pattern);
+
+        if (is_array($keys)) {
+            return $keys;
+        }
+
+        return [];
+    }
+
+    /**
      * @inheritDoc
      * @throws PhpfastcacheCoreException
      * @throws PhpfastcacheDriverException

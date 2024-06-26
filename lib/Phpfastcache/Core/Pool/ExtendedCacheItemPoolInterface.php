@@ -162,6 +162,23 @@ interface ExtendedCacheItemPoolInterface extends CacheItemPoolInterface, EventMa
     public function getAllItems(string $pattern = ''): iterable;
 
     /**
+     * Returns the ALL keys in cache as an array.
+     *
+     * @param string $pattern
+     * An optional pattern supported by a limited range of drivers.
+     * If this parameter is unsupported by the driver, a PhpfastcacheInvalidArgumentException will be thrown.
+     *
+     * @return array
+     *   An array of Cache Keys.
+     *   However, if no keys are returned by the backend then an empty
+     *   array WILL be returned instead.
+     *
+     * @throws PhpfastcacheInvalidArgumentException If the driver does not support the $pattern argument
+     * @throws PhpfastcacheUnsupportedMethodException If the driver does not permit to list all the keys through this implementation.
+     */
+    public function getAllKeys(string $pattern = ''): array;
+
+    /**
      * Returns A json string that represents an array of items.
      *
      * @param array<string> $keys An indexed array of keys of items to retrieve.
